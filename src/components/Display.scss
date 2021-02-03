@@ -1,0 +1,10 @@
+@import '../styles/styles-mixin.scss';
+
+#output, #display {
+  width: 400px;
+  height: 40px;
+  margin: 10px;
+
+  background: lightblue;
+  @include noselect;
+}
