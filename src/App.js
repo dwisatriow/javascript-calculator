@@ -18,8 +18,12 @@ function App() {
       if (num === "0" && /^0/.test(prevInput) && !(/[1-9]+0*$/.test(prevInput)))
         return prevInput;
 
-      // prevent input to have mutliple . (decimal)
-      if (num === "." && /\./.test(prevInput))
+      // prevent input adding number after a calculation
+      if (/=/.test(output))  
+        return prevInput;
+        
+      // prevent input to have multiple decimals and prevent adding decimal after a calculation
+      if (num === "." && (/\./.test(prevInput) || /=/.test(output)))
         return prevInput;
 
       // handle point as first input
@@ -38,13 +42,24 @@ function App() {
       return prevInput + num;
     });
 
-    setOutput(prevOutput => prevOutput + num);
+    setOutput(prevOutput => {
+      // prevent output adding number after a calculation
+      if (/=/.test(output))
+        return prevOutput;
+      
+      // prevent adding decimal after a calculation
+      if (num === "." && /=/.test(output))
+        return prevOutput;
+
+      // add the number to output
+      return prevOutput + num
+    });
   }
 
   // function handling pressed operator
   const handleOperator = (event) => {
     const op = event.target.innerText;
-
+    
     setInput(prevInput => {
       // prevent operator as first input
       if (!prevInput) return prevInput;
@@ -53,6 +68,12 @@ function App() {
       if (op === prevInput)
         return prevInput;
       
+      // start new calculation if previous calculation present
+      if (/=/.test(output)) {
+        setOutput(input + op);
+        return op;
+      }
+
         return op;  // add the operator to input
       });
     
@@ -82,7 +103,7 @@ function App() {
 
     // handle sequence of minus
     if (/--/.test(calculation))
-      calculation.replace(/(--)/, "+");
+      calculation = calculation.replace(/(--)/, "+");
 
     console.log(calculation);
     return new Function('return ' + calculation)();
@@ -94,6 +115,10 @@ function App() {
 
     // prevent equals as first input
     if (!input) return;
+
+    // prevent multiple equals in calculation
+    if (/=/.test(output))
+      return;
 
     // calculating the result
     if (/[\+\*\/-]$/.test(output)) {  // prevent operator as the last output before calculating
