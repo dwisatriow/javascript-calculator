@@ -7,7 +7,7 @@ import './App.scss';
 function App() {
   // initialize input and output state
   const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
+  const [output, setOutput] = useState([]);
 
   // function handling pressed number
   const handleNumber = (event) => {
@@ -19,11 +19,11 @@ function App() {
         return prevInput;
 
       // prevent input adding number after a calculation
-      if (/=/.test(output))  
+      if (/=/.test(output.join('')))  
         return prevInput;
         
       // prevent input to have multiple decimals and prevent adding decimal after a calculation
-      if (num === "." && (/\./.test(prevInput) || /=/.test(output)))
+      if (num === "." && (/\./.test(prevInput) || /=/.test(output.join(''))))
         return prevInput;
 
       // handle point as first input
@@ -44,15 +44,15 @@ function App() {
 
     setOutput(prevOutput => {
       // prevent output adding number after a calculation
-      if (/=/.test(output))
+      if (/=/.test(output.join('')))
         return prevOutput;
       
       // prevent adding decimal after a calculation
-      if (num === "." && /=/.test(output))
+      if (num === "." && /=/.test(output.join('')))
         return prevOutput;
 
       // add the number to output
-      return prevOutput + num
+      return prevOutput.concat([num]);
     });
   }
 
@@ -69,8 +69,8 @@ function App() {
         return prevInput;
       
       // start new calculation if previous calculation present
-      if (/=/.test(output)) {
-        setOutput(input + op);
+      if (/=/.test(output.join(''))) {
+        setOutput([input].concat([op]));
         return op;
       }
 
@@ -83,17 +83,17 @@ function App() {
 
       // handle negatif number following operator
       if (op === "-" && /[\+\*\/-]$/.test(prevOutput) && !(/[\+\*\/-]{2}$/.test(prevOutput)))
-        return prevOutput + op;
+        return prevOutput.concat([op]);
 
       // prevent adding sequential same operator to the output
-      if (prevOutput.charAt(prevOutput.length - 1) === op)
+      if (prevOutput[prevOutput.length - 1] === op)
         return prevOutput;
 
       // handle changing operator on the input
       if (/[\+\*\/-]$/.test(prevOutput))
-        return prevOutput.slice(0, prevOutput.length - 1) + op;
+        return prevOutput.slice(0, prevOutput.length - 1).concat([op]);
 
-      return prevOutput + op;
+      return prevOutput.concat([op]);
     });
   }
 
@@ -117,36 +117,46 @@ function App() {
     if (!input) return;
 
     // prevent multiple equals in calculation
-    if (/=/.test(output))
+    if (/=/.test(output.join('')))
       return;
 
     // calculating the result
-    if (/[\+\*\/-]$/.test(output)) {  // prevent operator as the last output before calculating
+    if (/[\+\*\/-]$/.test(output.join(''))) {  // prevent operator as the last output before calculating
       setOutput(prevOutput => {
         const newOutput = prevOutput.slice(0, prevOutput.length - 1);
-        result = calculate(newOutput);
+        result = calculate(newOutput.join(''));
         return newOutput
       })
     } else {
-      result = calculate(output);
+      result = calculate(output.join(''));
     }
 
     setInput(result);
     setOutput(prevOutput => {
-      return prevOutput + '=' + result;
+      return prevOutput.concat(['=', result]);
     });
   }
 
-  // function handling pressed AC
-  const handleClear = () => {
+  // function handling pressed CE
+  const handleClearEntry = () => {
+    // prevent clearing entry after calculation completed
+    if (/=/.test(output.join('')))
+      return;
+
     setInput("");
-    setOutput("");
+    setOutput(prevOutput => prevOutput.slice(0, prevOutput.length - 1));
+  }
+  
+  // function handling pressed AC
+  const handleClearAll = () => {
+    setInput("");
+    setOutput([]);
   }
   
   return (
     <div className="App">
       <Display input={input} output={output} />
-      <Numpad handleNumber={handleNumber} handleClear={handleClear} />
+      <Numpad handleNumber={handleNumber} handleClearEntry={handleClearEntry} handleClearAll={handleClearAll} />
       <Operator handleOperator={handleOperator} handleResult={handleResult} />
     </div>
   );

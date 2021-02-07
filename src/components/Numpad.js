@@ -1,6 +1,6 @@
 import './Numpad.scss';
 
-function Numpad({ handleNumber, handleClear }) {
+function Numpad({ handleNumber, handleClearEntry, handleClearAll }) {
   return (
     <div id="numpad">
       <div id="zero" onClick={handleNumber}>0</div>
@@ -14,7 +14,8 @@ function Numpad({ handleNumber, handleClear }) {
       <div id="eight" onClick={handleNumber}>8</div>
       <div id="nine" onClick={handleNumber}>9</div>
       <div id="decimal" onClick={handleNumber}>.</div>
-      <div id="clear" onClick={handleClear}>AC</div>
+      <div id="ce" onClick={handleClearEntry}>CE</div>
+      <div id="ac" onClick={handleClearAll}>AC</div>
     </div>
   );
 }
