@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Numpad from './components/Numpad';
-import Operator from './components/Operator';
 import Display from './components/Display';
 import './App.scss';
 
@@ -14,6 +13,9 @@ function App() {
     const num = event.target.innerText;
 
     setInput(prevInput => {
+      // limit digit
+      if (prevInput.length >= 12) return prevInput;
+
       // prevent input to begin with multiple 0's
       if (num === "0" && /^0/.test(prevInput) && !(/[1-9]+0*$/.test(prevInput)))
         return prevInput;
@@ -43,6 +45,13 @@ function App() {
     });
 
     setOutput(prevOutput => {
+      // limit digit
+      // if (prevOutput.join('').match(/([0-9]+)\.*$/).join('').length >= 12) return prevOutput;
+
+      // handle point as first output
+      if (num === "." && prevOutput.length === 0)
+        return prevOutput.concat(["0."]);
+
       // prevent output adding number after a calculation
       if (/=/.test(output.join('')))
         return prevOutput;
@@ -59,15 +68,19 @@ function App() {
   // function handling pressed operator
   const handleOperator = (event) => {
     const op = event.target.innerText;
-    
+
     setInput(prevInput => {
       // prevent operator as first input
       if (!prevInput) return prevInput;
 
+      //prevent operator following decimal
+      if (/\.$/.test(output.join('')))
+        return prevInput;
+
       // prevent adding sequential same operator to the input
       if (op === prevInput)
         return prevInput;
-      
+
       // start new calculation if previous calculation present
       if (/=/.test(output.join(''))) {
         setOutput([input].concat([op]));
@@ -79,18 +92,22 @@ function App() {
     
     setOutput(prevOutput => {
       // prevent operator as first output
-      if (!prevOutput) return prevOutput;
+      if (prevOutput.length === 0) return prevOutput;
 
-      // handle negatif number following operator
-      if (op === "-" && /[\+\*\/-]$/.test(prevOutput) && !(/[\+\*\/-]{2}$/.test(prevOutput)))
+      //prevent operator following decimal
+      if (/\.$/.test(output.join('')))
+        return prevOutput;
+
+      // handle negative number following operator
+      if (op === "-" && /[\+\*\/-]$/.test(prevOutput.join('')) && !(/[\+\*\/-]{2}$/.test(prevOutput.join(''))))
         return prevOutput.concat([op]);
 
       // prevent adding sequential same operator to the output
       if (prevOutput[prevOutput.length - 1] === op)
         return prevOutput;
 
-      // handle changing operator on the input
-      if (/[\+\*\/-]$/.test(prevOutput))
+      // handle changing operator on the output
+      if (/[\+\*\/-]$/.test(prevOutput.join('')))
         return prevOutput.slice(0, prevOutput.length - 1).concat([op]);
 
       return prevOutput.concat([op]);
@@ -116,6 +133,10 @@ function App() {
     // prevent equals as first input
     if (!input) return;
 
+    //prevent equals following decimal
+    if (/\.$/.test(output.join('')))
+      return;
+
     // prevent multiple equals in calculation
     if (/=/.test(output.join('')))
       return;
@@ -138,13 +159,13 @@ function App() {
   }
 
   // function handling pressed CE
-  const handleClearEntry = () => {
+  const handleDelete = () => {
     // prevent clearing entry after calculation completed
     if (/=/.test(output.join('')))
       return;
 
-    setInput("");
-    setOutput(prevOutput => prevOutput.slice(0, prevOutput.length - 1));
+    setInput(null);
+    output.pop();
   }
   
   // function handling pressed AC
@@ -154,10 +175,16 @@ function App() {
   }
   
   return (
-    <div className="App">
+    <div id="app">
+      <h1 id="app-name">CALCULATOR</h1>
       <Display input={input} output={output} />
-      <Numpad handleNumber={handleNumber} handleClearEntry={handleClearEntry} handleClearAll={handleClearAll} />
-      <Operator handleOperator={handleOperator} handleResult={handleResult} />
+      <Numpad
+        handleNumber={handleNumber}
+        handleOperator={handleOperator}
+        handleResult={handleResult}
+        handleDelete={handleDelete}
+        handleClearAll={handleClearAll}
+      />
     </div>
   );
 }

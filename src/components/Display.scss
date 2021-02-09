@@ -1,10 +1,59 @@
-@import '../styles/styles-mixin.scss';
+@import '../styles/colors.scss';
+@import '../styles/mixins.scss';
 
-#output, #display {
-  width: 400px;
-  height: 40px;
-  margin: 10px;
+#display-container {
+  width: 280px;
+  height: 80px;
+  padding: 4px 12px;
+  margin-bottom: 13px;
+  
+  background: $display-bg;
+  border: 2px solid $display-border;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
 
-  background: lightblue;
+#output {
+  width: 256px;
+  height: 34px;
+  margin: 0;
+
+  font-family: "Big Shoulders Text", cursive;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 28px;
+  line-height: 34px;
+  text-align: right;
+
+  direction: rtl;
+  color: $main-text;
+
+  overflow: scroll;
+  &::-webkit-scrollbar { display: none; }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  @include noselect;
+}
+
+#display {
+  width: 256px;
+  height: 34px;
+  margin: 0;
+
+  font-family: "Big Shoulders Text", cursive;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 28px;
+  line-height: 34px;
+  text-align: right;
+
+  color: $secondary-text;
+
+  overflow: scroll;
+  &::-webkit-scrollbar { display: none; }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
   @include noselect;
 }
