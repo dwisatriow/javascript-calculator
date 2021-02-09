@@ -14,7 +14,9 @@ function App() {
 
     setInput(prevInput => {
       // limit digit
-      if (prevInput.length >= 12) return prevInput;
+      if (prevInput.length > 11) {
+        return prevInput;
+      }
 
       // prevent input to begin with multiple 0's
       if (num === "0" && /^0/.test(prevInput) && !(/[1-9]+0*$/.test(prevInput)))
@@ -43,10 +45,12 @@ function App() {
       // add the number to input
       return prevInput + num;
     });
-
+    
     setOutput(prevOutput => {
       // limit digit
-      // if (prevOutput.join('').match(/([0-9]+)\.*$/).join('').length >= 12) return prevOutput;
+      if (prevOutput.length > 0 && prevOutput.join('').match(/\d+$/) !== null && prevOutput.join('').match(/\d+$/).join('').length > 11) {
+        return prevOutput;
+      }
 
       // handle point as first output
       if (num === "." && prevOutput.length === 0)
@@ -87,7 +91,7 @@ function App() {
         return op;
       }
 
-        return op;  // add the operator to input
+      return op;  // add the operator to input
       });
     
     setOutput(prevOutput => {
@@ -118,11 +122,14 @@ function App() {
   const calculate = (calculationStr) => {
     let calculation = "".concat(calculationStr);
 
+    // replace multiply and divide symbol
+    calculation = calculation.replace(/×/g, "*");
+    calculation = calculation.replace(/÷/g, "/");
+
     // handle sequence of minus
     if (/--/.test(calculation))
       calculation = calculation.replace(/(--)/, "+");
 
-    console.log(calculation);
     return new Function('return ' + calculation)();
   }
 
