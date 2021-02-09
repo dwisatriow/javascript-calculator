@@ -1,0 +1,35 @@
+@import './styles/colors.scss';
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+
+  background: $app-bg;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 320px;
+  height: 468px;
+  // padding: 16px 20px;
+
+  background: $calculator-bg;
+  border-radius: 4px;
+}
+
+#app-name {
+  margin-top: 16px;
+  margin-bottom: 6px;
+
+  font-family: "Big Shoulders Display", cursive;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 30px;
+
+  color: $main-text;
+}

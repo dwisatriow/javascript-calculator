@@ -1,14 +1,58 @@
-@import '../styles/styles-mixin.scss';
+@import '../styles/colors.scss';
+@import '../styles/mixins.scss';
 
-#zero, #one, #two,
-#three, #four, #five,
-#six, #seven, #eight,
-#nine, #decimal, #ce, #ac {
-  display: inline-block;
-  width: 40px;
-  height: 40px;
-  margin: 10px;
+#numpad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-template-areas: 
+    "ac del multiply divide"
+    "seven eight nine subtract"
+    "four five six add"
+    "one two three equals"
+    "zero zero decimal equals";
+  gap: 8px;
 
-  background: lightblue;
+  width: 280px;
+  height: 301px;
+}
+
+#zero { grid-area: zero; width: 136px; }
+#one { grid-area: one; }
+#two { grid-area: two; }
+#three { grid-area: three; }
+#four { grid-area: four; }
+#five { grid-area: five; }
+#six { grid-area: six; }
+#seven { grid-area: seven; }
+#eight { grid-area: eight; }
+#nine { grid-area: nine; }
+#decimal { grid-area: decimal; }
+#add { grid-area: add; }
+#subtract { grid-area: subtract; }
+#multiply { grid-area: multiply; }
+#divide { grid-area: divide; }
+#equals { grid-area: equals; height: 116px; }
+#del { grid-area: del; }
+#ac { grid-area: ac; }
+
+.pad {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 64px;
+  height: 54px;
+
+  font-family: "Big Shoulders Text";
+  font-style: normal;
+  font-weight: 300;
+  font-size: 24px;
+  line-height: 29px;
+  
+  color: $main-text;
+  background: $numpad-main-bg;
+  border-radius: 4px;
+
   @include noselect;
 }
