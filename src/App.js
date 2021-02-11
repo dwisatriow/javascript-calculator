@@ -48,10 +48,14 @@ function App() {
     
     setOutput(prevOutput => {
       // limit digit
-      if (prevOutput.length > 0 && prevOutput.join('').match(/\d+$/) !== null && prevOutput.join('').match(/\d+$/).join('').length > 11) {
+      if (prevOutput.length > 0 && prevOutput.join('').match(/[\d+\.]$/) !== null && prevOutput.join('').match(/[\d+\.]+$/).join('').length > 11) {
         return prevOutput;
       }
 
+      // prevent output to begin with multiple 0's
+      if (num === "0" && /^0/.test(prevOutput.join('')))
+        return prevOutput;
+      
       // handle point as first output
       if (num === "." && prevOutput.length === 0)
         return prevOutput.concat(["0."]);
@@ -60,8 +64,9 @@ function App() {
       if (/=/.test(output.join('')))
         return prevOutput;
       
-      // prevent adding decimal after a calculation
-      if (num === "." && /=/.test(output.join('')))
+      // prevent adding multiple decimal to a number and after a calculation
+      if (num === "." && /[\+\*\/-][\d+0]\.\d*$/.test(prevOutput.join('')) || /=/.test(prevOutput.join('')))
+          // || /[\+\*\/-][\d+0]\.\d*$/.test(prevOutput.join('')))
         return prevOutput;
 
       // add the number to output
@@ -92,7 +97,7 @@ function App() {
       }
 
       return op;  // add the operator to input
-      });
+    });
     
     setOutput(prevOutput => {
       // prevent operator as first output
@@ -171,8 +176,10 @@ function App() {
     if (/=/.test(output.join('')))
       return;
 
-    setInput(null);
-    output.pop();
+    setOutput(prevOutput => {
+      setInput(prevOutput[prevOutput.length - 2] || "");
+      return prevOutput.slice(0, prevOutput.length - 1);
+    });
   }
   
   // function handling pressed AC
