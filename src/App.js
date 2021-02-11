@@ -39,7 +39,7 @@ function App() {
         return prevInput;
 
       // prevent number following operator on input
-      if (/[\+\*\/-]$/.test(prevInput))
+      if (/[\+×÷-]$/.test(prevInput))
         return num;
 
       // add the number to input
@@ -72,7 +72,7 @@ function App() {
 
       // prevent adding multiple decimal to a number and after a calculation
       if (num === "."
-          && /[\+\*\/-]*\d+\.\d+$/.test(prevOutput.join(''))
+          && /[\+×÷-]*\d+\.\d+$/.test(prevOutput.join(''))
           || /=/.test(prevOutput.join('')))
         return prevOutput;
 
@@ -116,16 +116,20 @@ function App() {
 
       // handle negative number following operator
       if (op === "-"
-          && /[\+\*\/-]$/.test(prevOutput.join(''))
-          && !(/[\+\*\/-]{2}$/.test(prevOutput.join(''))))
+          && /[\+×÷-]$/.test(prevOutput.join(''))
+          && !(/[\+×÷-]{2}$/.test(prevOutput.join(''))))
         return prevOutput.concat([op]);
 
+      // handle three series of operator with subtract in the middle
+      if (/[\+×÷-]{1}-{1}$/.test(prevOutput.join('')))
+        return prevOutput.slice(0, prevOutput.length - 2).concat([op]);
+        
       // prevent adding sequential same operator to the output
       if (prevOutput[prevOutput.length - 1] === op)
         return prevOutput;
 
       // handle changing operator on the output
-      if (/[\+\*\/-]$/.test(prevOutput.join('')))
+      if (/[\+×÷-]$/.test(prevOutput.join('')))
         return prevOutput.slice(0, prevOutput.length - 1).concat([op]);
 
       return prevOutput.concat([op]);
@@ -163,7 +167,7 @@ function App() {
       return;
 
     // calculating the result
-    if (/[\+\*\/-]$/.test(output.join(''))) {  // prevent operator as the last output before calculating
+    if (/[\+×÷-]$/.test(output.join(''))) {  // prevent operator as the last output before calculating
       setOutput(prevOutput => {
         const newOutput = prevOutput.slice(0, prevOutput.length - 1);
         result = calculate(newOutput.join(''));
