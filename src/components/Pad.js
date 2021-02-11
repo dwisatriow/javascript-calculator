@@ -3,15 +3,10 @@ import './Pad.scss';
 
 function Pad({ id, text, handleFunction }) {
   const [classNames, setClassNames] = useState('');
-  const [animation, setAnimation] = useState(false);
 
   function handleClick(event) {
     handleFunction(event);
     setClassNames('clicked');
-  }
-
-  function onAnimationStart() {
-    // setAnimation(true);
   }
 
   function onAnimationEnd() {
@@ -23,7 +18,6 @@ function Pad({ id, text, handleFunction }) {
       id={id}
       className={`pad ${classNames}`}
       onClick={handleClick}
-      onAnimationStart={onAnimationStart}
       onAnimationEnd={onAnimationEnd}
     >
       {text}
