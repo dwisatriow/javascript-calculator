@@ -48,7 +48,9 @@ function App() {
     
     setOutput(prevOutput => {
       // limit digit
-      if (prevOutput.length > 0 && prevOutput.join('').match(/[\d+\.]$/) !== null && prevOutput.join('').match(/[\d+\.]+$/).join('').length > 11) {
+      if (prevOutput.length > 0
+          && prevOutput.join('').match(/\d+\.*\d*$/g) !== null
+          && prevOutput.join('').match(/\d+\.*\d*$/g).join('').length > 11) {
         return prevOutput;
       }
 
@@ -64,9 +66,14 @@ function App() {
       if (/=/.test(output.join('')))
         return prevOutput;
       
+      // prevent output to add series of decimals
+      if (num === "." && /\.$/.test(prevOutput.join('')))
+        return prevOutput;
+
       // prevent adding multiple decimal to a number and after a calculation
-      if (num === "." && /[\+\*\/-][\d+0]\.\d*$/.test(prevOutput.join('')) || /=/.test(prevOutput.join('')))
-          // || /[\+\*\/-][\d+0]\.\d*$/.test(prevOutput.join('')))
+      if (num === "."
+          && /[\+\*\/-]*\d+\.\d+$/.test(prevOutput.join(''))
+          || /=/.test(prevOutput.join('')))
         return prevOutput;
 
       // add the number to output
@@ -108,7 +115,9 @@ function App() {
         return prevOutput;
 
       // handle negative number following operator
-      if (op === "-" && /[\+\*\/-]$/.test(prevOutput.join('')) && !(/[\+\*\/-]{2}$/.test(prevOutput.join(''))))
+      if (op === "-"
+          && /[\+\*\/-]$/.test(prevOutput.join(''))
+          && !(/[\+\*\/-]{2}$/.test(prevOutput.join(''))))
         return prevOutput.concat([op]);
 
       // prevent adding sequential same operator to the output
