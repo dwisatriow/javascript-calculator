@@ -15,11 +15,11 @@ function Numpad({ handleNumber, handleOperator, handleResult, handleDelete, hand
 
   return (
     <div id="numpad">
-      { number.map(pad => <Pad id={pad.id} text={pad.text} handleFunction={handleNumber} />) }
-      { operator.map(op => <Pad id={op.id} text={op.text} handleFunction={handleOperator} />) }
-      <Pad id="equals" text='=' handleFunction={handleResult} />
-      <Pad id="del" text='DEL' handleFunction={handleDelete} />
-      <Pad id="ac" text='AC' handleFunction={handleClearAll} />
+      { number.map(pad => <Pad key={pad.id} id={pad.id} text={pad.text} handleFunction={handleNumber} />) }
+      { operator.map(op => <Pad key={op.id} id={op.id} text={op.text} handleFunction={handleOperator} />) }
+      <Pad key="equals" id="equals" text='=' handleFunction={handleResult} />
+      <Pad key="del" id="del" text='DEL' handleFunction={handleDelete} />
+      <Pad key="ac" id="ac" text='AC' handleFunction={handleClearAll} />
     </div>
   );
 }
